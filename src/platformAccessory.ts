@@ -2,15 +2,18 @@ import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { ExampleHomebridgePlatform } from './platform';
 
-import expect from 'ceylon';
-import { Response, Request, newHttpClient } from 'typescript-http-client';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+
+declare module 'axios' {
+  type AxiosResponse<T = any> = Promise<T>;
+}
 
 /**
  * Platform Accessory
  * An instance of this class is created for each accessory your platform registers
  * Each accessory may expose multiple services of different service types.
  */
-export class ExamplePlatformAccessory {
+export class ExamplePlatformAccessory{
   private service: Service;
 
   /**
@@ -25,13 +28,15 @@ export class ExamplePlatformAccessory {
   constructor(
     private readonly platform: ExampleHomebridgePlatform,
     private readonly accessory: PlatformAccessory,
+    private readonly axiosInstance: AxiosInstance,
   ) {
+
 
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Negros S.L.')
       .setCharacteristic(this.platform.Characteristic.Model, 'HTTP Switch')
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, '123456789');
 
     // get the LightBulb service if it exists, otherwise create a new LightBulb service
     // you can create multiple services for each accessory
@@ -108,6 +113,14 @@ export class ExamplePlatformAccessory {
   async setOn(value: CharacteristicValue) {
     // implement your own code to turn your device on/off
     this.exampleStates.On = value as boolean;
+
+
+
+    this.axiosInstance.get('http://192.168.1.23:5006/doorbell?timbre')
+      .then((response) => {
+        this.platform.log.debug(response.data);
+        this.platform.log.debug(response.statusText);
+      });
 
     this.platform.log.debug('Set Characteristic On ->', value);
   }
