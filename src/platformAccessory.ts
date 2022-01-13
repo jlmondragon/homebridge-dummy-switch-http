@@ -1,20 +1,17 @@
 import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
+import { SwitchHttpPlatform } from './platform';
+import { SwitchHttpPlatformConfig} from './config';
+import axios, { AxiosInstance } from 'axios';
 
-import { ExampleHomebridgePlatform } from './platform';
-
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-
-declare module 'axios' {
-  type AxiosResponse<T = any> = Promise<T>;
-}
 
 /**
  * Platform Accessory
  * An instance of this class is created for each accessory your platform registers
  * Each accessory may expose multiple services of different service types.
  */
-export class ExamplePlatformAccessory{
+export class SwitchHttpPlatformAccessory{
   private service: Service;
+  private axiosInstance : AxiosInstance;
 
   /**
    * These are just used to create a working example
@@ -26,12 +23,14 @@ export class ExamplePlatformAccessory{
   };
 
   constructor(
-    private readonly platform: ExampleHomebridgePlatform,
+    private readonly platform: SwitchHttpPlatform,
     private readonly accessory: PlatformAccessory,
-    private readonly axiosInstance: AxiosInstance,
+    public readonly config: SwitchHttpPlatformConfig,
   ) {
-
-
+    this.axiosInstance = axios.create({
+      baseURL: this.config.urlBase,
+      timeout: 15000,
+    });
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Negros S.L.')
@@ -114,9 +113,7 @@ export class ExamplePlatformAccessory{
     // implement your own code to turn your device on/off
     this.exampleStates.On = value as boolean;
 
-
-
-    this.axiosInstance.get('http://192.168.1.23:5006/doorbell?timbre')
+    this.axiosInstance.get(this.config.urlPath!)
       .then((response) => {
         this.platform.log.debug(response.data);
         this.platform.log.debug(response.statusText);

@@ -10,6 +10,12 @@
         "type": "string",
         "required": true,
         "default": "Example Dynamic Platform"
+      },
+      "httpUrl": {
+        "title": "Http Url",
+        "type": "string",
+        "required": false,
+        "default": "http://"
       }
     }
   }
