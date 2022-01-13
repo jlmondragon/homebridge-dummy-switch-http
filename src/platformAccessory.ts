@@ -2,6 +2,9 @@ import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { ExampleHomebridgePlatform } from './platform';
 
+import expect from 'ceylon';
+import { Response, Request, newHttpClient } from 'typescript-http-client';
+
 /**
  * Platform Accessory
  * An instance of this class is created for each accessory your platform registers
@@ -26,13 +29,13 @@ export class ExamplePlatformAccessory {
 
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Default-Manufacturer')
-      .setCharacteristic(this.platform.Characteristic.Model, 'Default-Model')
+      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Negros S.L.')
+      .setCharacteristic(this.platform.Characteristic.Model, 'HTTP Switch')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
     // get the LightBulb service if it exists, otherwise create a new LightBulb service
     // you can create multiple services for each accessory
-    this.service = this.accessory.getService(this.platform.Service.Lightbulb) || this.accessory.addService(this.platform.Service.Lightbulb);
+    this.service = this.accessory.getService(this.platform.Service.Switch) || this.accessory.addService(this.platform.Service.Switch);
 
     // set the service name, this is what is displayed as the default name on the Home app
     // in this example we are using the name we stored in the `accessory.context` in the `discoverDevices` method.
@@ -46,9 +49,11 @@ export class ExamplePlatformAccessory {
       .onSet(this.setOn.bind(this))                // SET - bind to the `setOn` method below
       .onGet(this.getOn.bind(this));               // GET - bind to the `getOn` method below
 
+    /**
     // register handlers for the Brightness Characteristic
     this.service.getCharacteristic(this.platform.Characteristic.Brightness)
       .onSet(this.setBrightness.bind(this));       // SET - bind to the 'setBrightness` method below
+    */
 
     /**
      * Creating multiple services of the same type.
@@ -61,13 +66,14 @@ export class ExamplePlatformAccessory {
      * can use the same sub type id.)
      */
 
+    /**
     // Example: add two "motion sensor" services to the accessory
     const motionSensorOneService = this.accessory.getService('Motion Sensor One Name') ||
       this.accessory.addService(this.platform.Service.MotionSensor, 'Motion Sensor One Name', 'YourUniqueIdentifier-1');
 
     const motionSensorTwoService = this.accessory.getService('Motion Sensor Two Name') ||
       this.accessory.addService(this.platform.Service.MotionSensor, 'Motion Sensor Two Name', 'YourUniqueIdentifier-2');
-
+      */
     /**
      * Updating characteristics values asynchronously.
      *
@@ -77,6 +83,8 @@ export class ExamplePlatformAccessory {
      * the `updateCharacteristic` method.
      *
      */
+
+    /**
     let motionDetected = false;
     setInterval(() => {
       // EXAMPLE - inverse the trigger
@@ -89,7 +97,9 @@ export class ExamplePlatformAccessory {
       this.platform.log.debug('Triggering motionSensorOneService:', motionDetected);
       this.platform.log.debug('Triggering motionSensorTwoService:', !motionDetected);
     }, 10000);
+    */
   }
+
 
   /**
    * Handle "SET" requests from HomeKit

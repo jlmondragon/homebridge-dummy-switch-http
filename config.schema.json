@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "DummySwitchHttp",
   "pluginType": "platform",
   "singular": true,
   "schema": {
