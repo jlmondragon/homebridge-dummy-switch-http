@@ -113,14 +113,22 @@ export class SwitchHttpPlatformAccessory{
     // implement your own code to turn your device on/off
     this.exampleStates.On = value as boolean;
 
-    this.axiosInstance.get(this.config.urlPath!)
-      .then((response) => {
-        this.platform.log.debug(response.data);
-        this.platform.log.debug(response.statusText);
-      });
+    if(value){
+      this.axiosInstance.get(this.config.urlPath!)
+        .then((response) => {
+          this.platform.log.debug(response.data);
+          this.platform.log.debug(response.statusText);
+          // TODO: PONER A OFF DEPENDIENDO DEL RESULTADO DEL MENSAJE DE LA RESPUESTA
+          this.service.updateCharacteristic(this.platform.Characteristic.On, false);
+        })
+        .catch((reason) =>{
+          this.platform.log.debug('Error receiving response : ', reason!);
+        });
+    }
 
     this.platform.log.debug('Set Characteristic On ->', value);
   }
+
 
   /**
    * Handle the "GET" requests from HomeKit
